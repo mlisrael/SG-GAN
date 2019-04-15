@@ -1,0 +1,6 @@
+datasets/gta/*
+logs/
+sample/
+__pycache__/
+checkpoint/
+datasets/*.zip
