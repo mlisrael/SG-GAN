@@ -4,3 +4,4 @@ sample/
 __pycache__/
 checkpoint/
 datasets/*.zip
+test/

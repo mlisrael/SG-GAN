@@ -22,20 +22,25 @@ def verify_dir_exists(dirPath):
         os.makedirs(dirPath)
 
 def prepare(img_dir, seg_dir, img_target_dir, seg_target_dir, trainSize, testSize, replace_names=None):
+    print("img_dir: ", img_dir)
+    print("seg_dir: ", seg_dir)
 
-    imgs = set(glob(img_dir + "*.png"))
-    segs = set(glob(seg_dir + "*.png"))
+    imgs = set(glob(img_dir + "*.png")).union(set(glob(img_dir + "*.jpg")))
+    segs = set(glob(seg_dir + "*.png")).union(set(glob(seg_dir + "*.jpg")))
+    
+    print("Found %s imgs, %s segs" % (len(imgs), len(segs)))
 
     # Find pairs
     pairs = []
     for img_path in list(imgs):
         seg_path = seg_dir + (img_path.split("/")[-1].replace(replace_names[0], replace_names[1]) if replace_names else
                               img_path.split("/")[-1])
+        
         if seg_path in segs:
             pairs.append((img_path, seg_path))
         else:
             print("Could not find segmentation image file %s" % seg_path)
-    print("candidate pairs:i ", len(pairs))
+    print("candidate pairs: %s" % len(pairs))
 
     if len(pairs) < trainSize + testSize:
         print("%s candidates not enough! need at least %s" % (len(pairs), trainSize + testSize))
@@ -86,11 +91,11 @@ if __name__ == "__main__":
     parser.add_argument("--A_segpath", "-As", type=str, default="/home/alon/data/playing/labels/",
                         help="dataset A's segmentation path")
     # cp `find train/ -name "*.png"` all_train/
-    parser.add_argument("--B_imagepath", "-Bi", type=str, default="/home/alon/data/cityscape/leftImg8bit/all_train/",
+    parser.add_argument("--B_imagepath", "-Bi", type=str, default="/home/alon/bdd100k/bdd100k/seg/images/train/",
                         help="dataset B's image path")
-    parser.add_argument("--B_segpath", "-Bs", type=str, default="/home/alon/data/cityscape/gtFine/all_train/",
+    parser.add_argument("--B_segpath", "-Bs", type=str,   default="/home/alon/bdd100k/bdd100k/seg/color_labels/train/",
                         help="dataset B's segmentation path")
-    parser.add_argument("--train_size", "-tr", type=int, default=2000,
+    parser.add_argument("--train_size", "-tr", type=int, default=5000,
                         help="number of training examples for each dataset")
     parser.add_argument("--test_size", "-te", type=int, default=500, help="number of test examples for each dataset")
     args = vars(parser.parse_args())
@@ -98,21 +103,24 @@ if __name__ == "__main__":
     trainSize = args["train_size"]
     testSize = args["test_size"]
 
+    print("Preparing group A")
     prepare(
         img_dir=args["A_imagepath"],
         seg_dir=args["A_segpath"],
-        img_target_dir="./datasets/gta/trainA/",
-        seg_target_dir="./datasets/gta/trainA_seg/",
+        img_target_dir="./datasets/mlisrael/trainA/",
+        seg_target_dir="./datasets/mlisrael/trainA_seg/",
         trainSize=trainSize,
         testSize=testSize,
+        replace_names=("_train_color", "_train_id")
     )
+    print("Preparing group B")
     prepare(
         img_dir=args["B_imagepath"],
         seg_dir=args["B_segpath"],
-        img_target_dir="./datasets/gta/trainB/",
-        seg_target_dir="./datasets/gta/trainB_seg/",
+        img_target_dir="./datasets/mlisrael/trainB/",
+        seg_target_dir="./datasets/mlisrael/trainB_seg/",
         trainSize=trainSize,
         testSize=testSize,
-        replace_names=("_leftImg8bit", "_gtFine_color")
+        replace_names=(".jpg", "_train_color.png")
     )
 
