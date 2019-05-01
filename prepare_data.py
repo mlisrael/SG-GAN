@@ -86,9 +86,9 @@ def prepare(img_dir, seg_dir, img_target_dir, seg_target_dir, trainSize, testSiz
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--A_imagepath", "-Ai", type=str, default="/home/alon/data/playing/images/",
+    parser.add_argument("--A_imagepath", "-Ai", type=str, default="/home/alon/from_games/images/",
                         help="dataset A's image path")
-    parser.add_argument("--A_segpath", "-As", type=str, default="/home/alon/data/playing/labels/",
+    parser.add_argument("--A_segpath", "-As", type=str, default="/home/alon/from_games/labels/",
                         help="dataset A's segmentation path")
     # cp `find train/ -name "*.png"` all_train/
     parser.add_argument("--B_imagepath", "-Bi", type=str, default="/home/alon/bdd100k/bdd100k/seg/images/train/",
