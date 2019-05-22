@@ -173,6 +173,7 @@ class sggan(object):
         self.g_optim = tf.train.AdamOptimizer(self.lr, beta1=args.beta1) \
             .minimize(self.g_loss, var_list=self.g_vars)
 
+
         init_op = tf.global_variables_initializer()
         self.sess.run(init_op)
         self.writer = tf.summary.FileWriter("./logs", self.sess.graph)

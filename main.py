@@ -21,7 +21,7 @@ parser.add_argument('--beta1', dest='beta1', type=float, default=0.5, help='mome
 parser.add_argument('--which_direction', dest='which_direction', default='AtoB', help='AtoB or BtoA')
 parser.add_argument('--phase', dest='phase', default='train', help='train, test')
 parser.add_argument('--save_freq', dest='save_freq', type=int, default=1000, help='save a model every save_freq iterations')
-parser.add_argument('--print_freq', dest='print_freq', type=int, default=100, help='print the debug information every print_freq iterations')
+parser.add_argument('--print_freq', dest='print_freq', type=int, default=1000, help='print the debug information every print_freq iterations')
 parser.add_argument('--continue_train', dest='continue_train', type=bool, default=False, help='if continue training, load the latest model: 1: true, 0: false')
 parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default='./checkpoint', help='models are saved here')
 parser.add_argument('--sample_dir', dest='sample_dir', default='./sample', help='sample are saved here')
@@ -31,7 +31,7 @@ parser.add_argument('--Lg_lambda', dest='Lg_lambda', type=float, default=5.0, he
 parser.add_argument('--use_resnet', dest='use_resnet', type=bool, default=False, help='generation network using residule block')
 parser.add_argument('--use_lsgan', dest='use_lsgan', type=bool, default=True, help='gan loss defined in lsgan')
 parser.add_argument('--max_size', dest='max_size', type=int, default=50, help='max size of image pool, 0 means do not use image pool')
-parser.add_argument('--segment_class', dest='segment_class', type=int, default=8, help='number of segmentation classes')
+parser.add_argument('--segment_class', dest='segment_class', type=int, default=11, help='number of segmentation classes')
 args = parser.parse_args()
 
 
@@ -47,8 +47,13 @@ def main(_):
     tfconfig.gpu_options.allow_growth = True
     with tf.Session(config=tfconfig) as sess:
         model = sggan(sess, args)
-        model.train(args) if args.phase == 'train' \
-            else model.test(args)
+
+        if args.phase == 'train':
+            model.train(args) 
+        elif args.phase == 'test':
+            model.test(args)
+        else:
+            print('Unknown mode:', args.phase)
 
 if __name__ == '__main__':
     tf.app.run()
