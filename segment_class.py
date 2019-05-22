@@ -125,6 +125,7 @@ def preprocess_master(src, maskmap):
 if __name__ == "__main__":
     maskmapA = A_maskmap()
     preprocess_master("datasets/mlisrael/trainA_seg", maskmapA)
+    
     maskmapB = A_maskmap()
     preprocess_master("datasets/mlisrael/trainB_seg", maskmapB)
 
